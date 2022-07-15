@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job nProcesses="100" simulateSubmission="false">
+
+        <stdout URL="file:./jobs/log/&productionId;/$JOBID.log" />
+        <stderr URL="file:./jobs/err/&productionId;/$JOBID.err" />
+                
+        <Generator>
+          <Location>./jobs/report/</Location>
+          <ScriptLocation>./jobs/csh/</ScriptLocation>
+          <ListLocation>./jobs/list/</ListLocation>
+        </Generator>
+                                                
+
+<command>
+starver SL19e
+
+root4star -b -l -q run_evtGent_toyMc.C
+mv D0.toyMc.root D0.$JOBID.toyMc.root
+
+
+</command>
+
+<output fromScratch="*.toyMc.root" toURL="/gpfs01/star/pwg/vanekjan/myDpmEvtGenFastSim_D_jets/myOutput/&productionId;/"/>
+
+<SandBox installer="ZIP">
+  <Package name="LocalLibraries">
+    <File>file:./StRoot/</File>
+    <File>file:./.sl73_gcc485/</File>
+    <File>file:./run_evtGent_toyMc.C</File>
+    <File>file:./evtGen_toyMc.C</File>
+    <File>file:./evtGen_toyMc_C.d</File>
+    <File>file:./evtGen_toyMc_C.so</File>
+    <File>file:./input/</File>
+    <File>file:./D0.PHSP.DEC</File>
+	</Package>
+</SandBox>
+
+</job>

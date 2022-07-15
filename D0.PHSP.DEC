@@ -1,0 +1,7 @@
+Decay D0
+  1.000    K- pi+     PHSP;
+Enddecay
+Decay anti-D0
+  1.000    K+ pi-     PHSP;
+Enddecay
+End

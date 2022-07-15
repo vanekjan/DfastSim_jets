@@ -1,0 +1,47 @@
+/BKstarGamma.dec/1.1/Fri Sep 23 18:37:47 2016//
+/BuDst0rhop.dec/1.1/Fri Sep 23 18:37:47 2016//
+/Kspimumu.dec/1.1/Fri Sep 23 18:37:47 2016//
+/Makefile/1.1/Fri Sep 23 18:37:47 2016//
+/PhaseSpacePlots.C/1.1/Fri Sep 23 18:37:47 2016//
+/PlotKspimumu.C/1.1/Fri Sep 23 18:37:47 2016//
+/compareAllDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareB0PythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareBpPythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareBs0PythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareDalitz.C/1.1/Fri Sep 23 18:37:47 2016//
+/compareRootFiles.cc/1.1/Fri Sep 23 18:37:47 2016//
+/compareRootFiles.hh/1.1/Fri Sep 23 18:37:47 2016//
+/compareTauPythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareTauolaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/compareUpsilonPythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/configure/1.1/Fri Sep 23 18:37:47 2016//
+/genAllDecayExamples.sh/1.1/Fri Sep 23 18:37:47 2016//
+/genB0PythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/genBpPythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/genBs0PythiaDecays.sh/1.1/Fri Sep 23 18:37:47 2016//
+/genDDalitzModes.sh/1.1/Fri Sep 23 18:37:47 2016//
+/genDalitzDecays.sh/1.1/Fri Sep 23 18:37:48 2016//
+/genExampleRootFiles.cc/1.1/Fri Sep 23 18:37:48 2016//
+/genPHSP.sh/1.1/Fri Sep 23 18:37:48 2016//
+/genRootDecayChain.cc/1.1/Fri Sep 23 18:37:48 2016//
+/genRootDecayChain.hh/1.1/Fri Sep 23 18:37:48 2016//
+/genTauPythiaDecays.sh/1.1/Fri Sep 23 18:37:48 2016//
+/genTauolaDecays.sh/1.1/Fri Sep 23 18:37:48 2016//
+/genUpsilonPythiaDecays.sh/1.1/Fri Sep 23 18:37:48 2016//
+/photosPlots.C/1.1/Fri Sep 23 18:37:48 2016//
+/photosTest.dec/1.1/Fri Sep 23 18:37:48 2016//
+/plotBKstarGamma.C/1.1/Fri Sep 23 18:37:48 2016//
+/runKspimumu.sh/1.1/Fri Sep 23 18:37:48 2016//
+/runPhotosTest.sh/1.1/Fri Sep 23 18:37:48 2016//
+/testCPVDecays.cc/1.1/Fri Sep 23 18:37:48 2016//
+D/B0Files////
+D/BpFiles////
+D/Bs0Files////
+D/CPVDecayFiles////
+D/DalitzFiles////
+D/PHSPFiles////
+D/TauolaFiles////
+D/UpsilonFiles////
+D/gifFiles////
+D/rootFiles////
+D/tauFiles////
