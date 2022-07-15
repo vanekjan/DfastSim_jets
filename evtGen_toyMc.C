@@ -123,7 +123,7 @@ void evtGen_toyMc()
     //TLorentzVector(px, py, pz, E);
     TLorentzVector* b_d = new TLorentzVector(InKinematics[4], InKinematics[5], InKinematics[6], InKinematics[3]);
 
-    cout<<InKinematics[1]<<endl;
+    //cout<<InKinematics[1]<<endl;
 
     decayAndFill(InKinematics[1], b_d, 1., ptl);
 
