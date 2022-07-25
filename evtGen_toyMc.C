@@ -65,34 +65,32 @@ TTree* outTree;
 float SV_x, SV_y, SV_z;
 float MCdecayLength;
 
-float pi_E, pi_px, pi_py, pi_pz, pi_pt, pi_ch;
+float pi_E, pi_px, pi_py, pi_pz, pi_pt, pi_PID;
 float pi_eta, pi_phi;
 
-float K_E, K_px, K_py, K_pz, K_pt, K_ch;
+float K_E, K_px, K_py, K_pz, K_pt, K_PID;
 float K_eta, K_phi;
 
-TFile* result; //output file in root format
 
 ifstream inFile; //input text files
 
 ofstream outFile; //output text file
 
-string outFileName = "D0.toyMc.root"; //default output file name (do not change - see submit XML)
+TFile* result; //output file in root format
+
+string outRootFileName = "D0.toyMc.root"; //ROOT output file name (do not change - see submit XML)
 
 //-------------------------------------------------------------------------------------------------------------------------
 
 void initEvtGen();
-void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& p1Mom, TVector3 v00);
-void decayAndFill(int PDG_id, TLorentzVector* b, double const weight, TClonesArray& daughters); //Decay particle - PDG ID
+void fill(double *MotherKinematics, TLorentzVector const& kMom, TLorentzVector const& p1Mom, TVector3 v00);
+void decayAndFill(double *MotherKinematics, TClonesArray& daughters);
 void bookObjects();
 void write();
 
 StarEvtGenDecayer* starEvtGenDecayer = NULL;
 
 //============== main  program ==================
-
-//centrality range in %, default range is 0% to 80%, pTspectrum = 0 - flat pT, 1 - Levy (weight function)
-//specifically set in run_evtGent_toyMc.C
 void evtGen_toyMc() 
 {
   cout<<"Starting EvtGen"<<endl;
@@ -120,12 +118,7 @@ void evtGen_toyMc()
       Input_kine_line_stream>>InKinematics[i];
     }    
 
-    //TLorentzVector(px, py, pz, E);
-    TLorentzVector* b_d = new TLorentzVector(InKinematics[4], InKinematics[5], InKinematics[6], InKinematics[3]);
-
-    //cout<<InKinematics[1]<<endl;
-
-    decayAndFill(InKinematics[1], b_d, 1., ptl);
+    decayAndFill(InKinematics, ptl);
 
   }
 
@@ -134,15 +127,15 @@ void evtGen_toyMc()
   write();
   cout<<"Written!"<<endl;
 
-
-
   return;
-
 }
 
 
-void decayAndFill(int PDG_id, TLorentzVector* b, double const weight, TClonesArray& daughters)//decay for D+
+void decayAndFill(double *MotherKinematics, TClonesArray& daughters)//decay for D0
 {
+  TLorentzVector* b = new TLorentzVector(MotherKinematics[4], MotherKinematics[5], MotherKinematics[6], MotherKinematics[3]);
+
+  int PDG_id = MotherKinematics[1];
 
   starEvtGenDecayer->Decay(PDG_id, b); //Decay particle
 
@@ -178,20 +171,56 @@ void decayAndFill(int PDG_id, TLorentzVector* b, double const weight, TClonesArr
   daughters.Clear();
 
   //save decay
-  fill(PDG_id, b, weight, kMom, p1Mom, v00);
+  fill(MotherKinematics, kMom, p1Mom, v00);
+
+  return;
 
 }
 
-void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& p1Mom, TVector3 v00)
+//void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& kMom, TLorentzVector const& p1Mom, TVector3 v00)
+void fill(double *MotherKinematics, TLorentzVector const& kMom, TLorentzVector const& p1Mom, TVector3 v00)
 {
+
+  for(unsigned int i = 0; i < 9; i++ )
+  {
+    outFile<<MotherKinematics[i]<<" ";
+
+  }
   
-  
+  outFile<<endl;
+
+  //to store input kinematics in array: 
+  //#N(0)	pid(1)	stat(2) 	E(3) 	Px(4)	Py(5)	Pz(6)	Eta(7)	Phi(8)
+  double OutKinematicsKaon[9];
+  double OutKinematicsPion[9];
 
    
   // reconstruct
 
-  //float const kDca = dca(kMom.Vect(), v00, vertex);
-  //float const pDca = dca(p1Mom.Vect(), v00, vertex);
+  OutKinematicsKaon[0] = MotherKinematics[0];
+  OutKinematicsPion[0] = MotherKinematics[0];
+
+  if(MotherKinematics[1] == 421)//D0
+  {
+    K_PID = -321;
+    pi_PID = 211;
+
+    OutKinematicsKaon[1] = -321;
+    OutKinematicsPion[1] = 211;
+  }
+
+  if(MotherKinematics[1] == -421)//D0_bar
+  {
+    K_PID = 321;
+    pi_PID = -211;
+
+    OutKinematicsKaon[1] = 321;
+    OutKinematicsPion[1] = -211;
+  }
+
+  OutKinematicsKaon[2] = 0;
+  OutKinematicsPion[2] = 0;  
+
 
   //secondary vertex
   SV_x = v00.x();
@@ -202,6 +231,15 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
 
 
   //pion
+  //for txt output
+  OutKinematicsPion[3] = p1Mom.E();
+  OutKinematicsPion[4] = p1Mom.Px();
+  OutKinematicsPion[5] = p1Mom.Py();
+  OutKinematicsPion[6] = p1Mom.Pz();
+  OutKinematicsPion[7] = p1Mom.Eta();
+  OutKinematicsPion[8] = p1Mom.Phi();
+
+  //for ROOT output
   pi_E = p1Mom.E();
   pi_px = p1Mom.Px();
   pi_py = p1Mom.Py();
@@ -212,6 +250,15 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
   pi_phi = p1Mom.Phi();
 
   //kaon
+  //for txt output
+  OutKinematicsKaon[3] = kMom.E();
+  OutKinematicsKaon[4] = kMom.Px();
+  OutKinematicsKaon[5] = kMom.Py();
+  OutKinematicsKaon[6] = kMom.Pz();
+  OutKinematicsKaon[7] = kMom.Eta();
+  OutKinematicsKaon[8] = kMom.Phi();
+
+  //for ROOT output
   K_E = kMom.E();
   K_px = kMom.Px();
   K_py = kMom.Py();
@@ -221,11 +268,28 @@ void fill(int const kf, TLorentzVector* b, double weight, TLorentzVector const& 
   K_eta = kMom.Eta();
   K_phi = kMom.Phi();
 
-
-  outTree->Fill();
-
+  outTree->Fill(); //fill tree
 
 
+  //save info about decay daughters to txt file
+  for(unsigned int i = 0; i < 9; i++ )
+  {
+    outFile<<OutKinematicsKaon[i]<<" ";
+
+  }
+  
+  outFile<<endl;
+
+  for(unsigned int i = 0; i < 9; i++ )
+  {
+    outFile<<OutKinematicsPion[i]<<" ";
+
+  }
+  
+  outFile<<endl;
+
+
+  return;
 }
 
 
@@ -243,10 +307,18 @@ void bookObjects()
   {
     cout<<"Failed to open input file!"<<endl;
     return;
-  } 
+  }
+
+  outFile.open("D0_decayed_out.txt");
+
+  if(!outFile.is_open())
+  {
+    cout<<"Failed to open output file!"<<endl;
+    return;
+  }
 
   
-  result = new TFile(outFileName.c_str(), "recreate");
+  result = new TFile(outRootFileName.c_str(), "recreate");
   //result->SetCompressionLevel(1);
   result->cd();
 
@@ -261,7 +333,7 @@ void bookObjects()
   outTree->Branch("MCdecayLength", &MCdecayLength, "MCdecayLength/F");
 
   //pion
-  outTree->Branch("pi_ch", &pi_ch, "pi_ch/F");   
+  outTree->Branch("pi_PID", &pi_PID, "pi_PID/F");   
   outTree->Branch("pi_E", &pi_E, "pi_E/F");  
   outTree->Branch("pi_px", &pi_px, "pi_px/F");
   outTree->Branch("pi_py", &pi_py, "pi_py/F");
@@ -272,7 +344,7 @@ void bookObjects()
   outTree->Branch("pi_eta", &pi_eta, "pi_eta/F");
 
   //kaon
-  outTree->Branch("K_ch", &K_ch, "K_ch/F");
+  outTree->Branch("K_PID", &K_PID, "K_PID/F");
   outTree->Branch("K_E", &K_E, "K_E/F");  
   outTree->Branch("K_px", &K_px, "K_px/F");
   outTree->Branch("K_py", &K_py, "K_py/F");
@@ -285,6 +357,8 @@ void bookObjects()
   
 
   cout << "Done with loading all files ..." << endl;
+
+  return;
 }
 //_______________________________________________________________________________________________________________________
 
@@ -353,6 +427,8 @@ void write()
   result->cd();
   outTree->Write();
   result->Close();
+
+  return;
 }
 
 void initEvtGen()
@@ -376,4 +452,6 @@ void initEvtGen()
   starEvtGenDecayer=new StarEvtGenDecayer(myGenerator);
   starEvtGenDecayer->SetDecayTable("D0.PHSP.DEC");
   starEvtGenDecayer->SetDebug(0);
+
+  return;
 }
